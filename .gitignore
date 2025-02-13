@@ -1,0 +1,12 @@
+# Dependências do Composer
+/vendor/
+composer.lock
+
+# Configurações do ambiente
+.env
+
+# Arquivos de cache e logs
+/cache/
+logs/
+*.log
+
