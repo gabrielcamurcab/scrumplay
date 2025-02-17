@@ -2,23 +2,18 @@
 
 require 'vendor/autoload.php';
 require 'config/database.php';
+require 'bootstrap.php';
 
 date_default_timezone_set('America/Sao_Paulo');
 
+use App\WebSocket\WebSocketHandler;
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
 use React\Socket\SocketServer;
 use React\EventLoop\Loop;
-use App\WebSocket\WebSocketHandler;
-use App\Controllers\SessionController;
-use App\Services\SessionService;
-use App\Repositories\SessionRepository;
 
-$sessionRepo = new SessionRepository($pdo);
-$sessionService = new SessionService($sessionRepo);
-$sessionController = new SessionController($sessionService);
-$webSocketHandler = new WebSocketHandler($sessionController);
+$webSocketHandler = $container->get(WebSocketHandler::class);
 
 $loop = Loop::get();
 $server = new IoServer(

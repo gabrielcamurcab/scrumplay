@@ -5,17 +5,20 @@ namespace App\WebSocket;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 use App\Controllers\SessionController;
+use App\Controllers\UserStoryController;
 
 class WebSocketHandler implements MessageComponentInterface
 {
     protected $clients;
     protected $sessionController;
+    protected $userStoryController;
     protected $rooms;
 
-    public function __construct(SessionController $sessionController)
+    public function __construct(SessionController $sessionController, UserStoryController $userStoryController)
     {
         $this->clients = new \SplObjectStorage;
         $this->sessionController = $sessionController;
+        $this->userStoryController = $userStoryController;
         $this->rooms = [];
     }
 
@@ -37,6 +40,8 @@ class WebSocketHandler implements MessageComponentInterface
             case 'create_room':
                 $this->createRoom($from, $data);
                 break;
+            case 'create_user_story':
+                $this->createUserStory($from, $data);
             #case 'join_room':
                 #$this->joinRoom($from, $data['session_id']);
                 #break;
@@ -64,6 +69,14 @@ class WebSocketHandler implements MessageComponentInterface
         $conn->send(json_encode([
             'success' => "Room $session_id criada!",
             'session_id' => $session_id
+        ]));
+    }
+
+    public function createUserStory($conn, $data) {
+        $userStory = $this->userStoryController->handleCreateUserStory($data);
+        echo "UserStoryCriada $userStory";
+        $conn->send(json_encode([
+            'success' => "User Story criada!"
         ]));
     }
 
